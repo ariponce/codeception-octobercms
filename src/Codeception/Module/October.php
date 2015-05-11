@@ -11,33 +11,9 @@ use Illuminate\Http\Request;
 use Exception;
 
 /**
- *
- * This module allows you to run functional tests for Laravel 5.
+ * This module allows you to run functional tests for OctoberCMS.
  * Please try it and leave your feedback.
- * The module is based on the Laravel 4 module by Davert.
- *
- * ## Demo project
- * <https://github.com/janhenkgerritsen/codeception-laravel5-sample>
- *
- * ## Status
- *
- * * Maintainer: **Jan-Henk Gerritsen**
- * * Stability: **dev**
- * * Contact: janhenkgerritsen@gmail.com
- *
- * ## Config
- *
- * * cleanup: `boolean`, default `true` - all db queries will be run in transaction, which will be rolled back at the end of test.
- * * environment_file: `string`, default `.env` - The .env file to load for the tests.
- * * bootstrap: `string`, default `bootstrap/app.php` - Relative path to app.php config file.
- * * root: `string`, default `` - Root path of our application.
- * * packages: `string`, default `workbench` - Root path of application packages (if any).
- *
- * ## API
- *
- * * app - `Illuminate\Foundation\Application` instance
- * * client - `BrowserKit` client
- *
+ * The module is based on the Laravel5 module.
  */
 class October extends Framework implements ActiveRecord
 {
