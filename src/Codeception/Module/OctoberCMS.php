@@ -6,16 +6,14 @@ use Codeception\Lib\Connector\Laravel5 as LaravelConnector;
 use Codeception\Lib\Framework;
 use Codeception\Lib\Interfaces\ActiveRecord;
 use Codeception\Subscriber\ErrorHandler;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
-use Exception;
 
 /**
  * This module allows you to run functional tests for OctoberCMS.
  * Please try it and leave your feedback.
  * The module is based on the Laravel5 module.
  */
-class October extends Framework implements ActiveRecord
+class OctoberCMS extends Framework implements ActiveRecord
 {
 
     /**
@@ -55,7 +53,7 @@ class October extends Framework implements ActiveRecord
     public function _initialize()
     {
         $this->revertErrorHandler();
-        $this->initializeLaravel();
+        $this->initializeOctober();
     }
 
     /**
@@ -66,7 +64,7 @@ class October extends Framework implements ActiveRecord
      */
     public function _before(\Codeception\TestCase $test)
     {
-        $this->initializeLaravel();
+        $this->initializeOctober();
 
         if ($this->app['db'] && $this->config['cleanup']) {
             $this->app['db']->beginTransaction();
@@ -125,11 +123,11 @@ class October extends Framework implements ActiveRecord
     }
 
     /**
-     * Initialize the Laravel framework.
+     * Initialize the October CMS
      *
      * @throws ModuleConfig
      */
-    protected function initializeLaravel()
+    protected function initializeOctober()
     {
         $this->app = $this->bootApplication();
         $this->app->instance('request', new Request());
@@ -138,7 +136,7 @@ class October extends Framework implements ActiveRecord
     }
 
     /**
-     * Boot the Laravel application object.
+     * Boot the OctoberCMS application object.
      *
      * @return \Illuminate\Foundation\Application
      * @throws \Codeception\Exception\ModuleConfig
@@ -148,8 +146,6 @@ class October extends Framework implements ActiveRecord
         $projectDir = explode($this->config['packages'], \Codeception\Configuration::projectDir())[0];
         $projectDir .= $this->config['root'];
         require $projectDir . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-
-        
 
         $bootstrapFile = $projectDir . $this->config['bootstrap'];
 
@@ -390,16 +386,11 @@ class October extends Framework implements ActiveRecord
      * an array of credentials.
      *
      * @param  \Illuminate\Contracts\Auth\User|array $user
-     * @param  string $driver
      * @return void
      */
-    public function amLoggedAs($user, $driver = null)
+    public function amLoggedAs($user)
     {
-        if ($user instanceof Authenticatable) {
-            $this->app['auth']->driver($driver)->setUser($user);
-        } else {
-            $this->app['auth']->driver($driver)->attempt($user);
-        }
+        $this->app['backend.auth']->authenticate($user);
     }
 
     /**
@@ -407,7 +398,7 @@ class October extends Framework implements ActiveRecord
      */
     public function logout()
     {
-        $this->app['auth']->logout();
+        $this->app['backend.auth']->logout();
     }
 
     /**
@@ -415,7 +406,7 @@ class October extends Framework implements ActiveRecord
      */
     public function seeAuthentication()
     {
-        $this->assertTrue($this->app['auth']->check(), 'User is not logged in');
+        $this->assertTrue($this->app['backend.auth']->check(), 'User is not logged in');
     }
 
     /**
@@ -423,7 +414,7 @@ class October extends Framework implements ActiveRecord
      */
     public function dontSeeAuthentication()
     {
-        $this->assertFalse($this->app['auth']->check(), 'User is logged in');
+        $this->assertFalse($this->app['backend.auth']->check(), 'User is logged in');
     }
 
     /**
